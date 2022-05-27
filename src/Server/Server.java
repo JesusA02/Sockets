@@ -1,32 +1,38 @@
-package Server;
+package Server; //codigo modificado
 
 import java.net.*;
 import java.io.*;
 import Common.*;
 
-public class Server {
+public class Server implements Runnable{
     ServerSocket server;
     Socket client;
     ObjectInputStream input;
-    Mensaje m;
+    Dot dot;
 
-    public Server(){
+    public Server(Dot d){
+        dot = d;
         try {
             server = new ServerSocket(4444);
-            client = server.accept();
-            input = new ObjectInputStream(client.getInputStream());
-
-            m = (Mensaje) input.readObject();
-
-            input.close();
-            client.close();
-            server.close();
-
-            System.out.println(m);
-            
         } catch (Exception e) {
             //TODO: handle exception
         }
         
     }
+
+    public void run(){
+        try {
+            while(true){
+                client = server.accept();
+                input = new ObjectInputStream(client.getInputStream());
+                dot.target = (Target)input.readObject();
+                input.close();
+                client.close();
+            }
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+
+    }
+    
 }
